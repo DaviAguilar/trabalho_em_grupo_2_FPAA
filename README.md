@@ -105,3 +105,7 @@ Grade Final:
   - `main`: Implementa o algoritmo Flood Fill recursivo.
   - `main`: Gerencia a entrada do usuário, validação, exibição da grade e fluxo do programa.
 
+## Integrantes
+- Davi Aguilar
+- Pedro Moreira
+- Rafael Chequer
