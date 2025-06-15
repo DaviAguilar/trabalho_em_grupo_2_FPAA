@@ -66,13 +66,6 @@ Grade Final:
 2 2 1 1 1
 1 1 4 4 4
 ```
-**Legenda**:
-- 0: Navegável
-- 1: Obstáculo
-- 2: Vermelho
-- 3: Laranja
-- 4: Amarelo
-- ... (até 21 cores distintas)
 
 ### Exemplo 2
 **Entrada**:
@@ -111,10 +104,4 @@ Grade Final:
   - `print_grid`: Exibe a grade como uma matriz.
   - `main`: Implementa o algoritmo Flood Fill recursivo.
   - `main`: Gerencia a entrada do usuário, validação, exibição da grade e fluxo do programa.
-- O código segue boas práticas: nomes de funções claros, design modular e validação de entrada.
 
-## Entrega
-- Repositório: [Insira o link do repositório GitHub aqui, por exemplo, https://github.com/exemploaluno/trabalho_em_grupo_2_FPAA]
-- Certifique-se de que o repositório esteja público ou acessível ao instrutor via CANVAS.
-- Todos os membros do grupo devem enviar o link do repositório no CANVAS para registro.
-isar que eu inclua o `main.py` novamente, modifique a tradução, ou traduza outro arquivo (como o `README.md` da versão gráfica), por favor, me avise!
