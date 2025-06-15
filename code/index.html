@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Flood Fill Visualization</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js"></script>
+    <style>
+        body { display: flex; flex-direction: column; align-items: center; font-family: Arial, sans-serif; }
+        canvas { border: 1px solid black; }
+        button { margin: 10px; padding: 10px 20px; font-size: 16px; }
+        #output { margin-top: 20px; font-family: monospace; white-space: pre; }
+        .input-group { margin: 10px; }
+        input { padding: 5px; font-size: 16px; width: 60px; }
+        label { margin-right: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Flood Fill - Region Coloring</h1>
+    <div class="input-group">
+        <label for="rows">Rows:</label>
+        <input type="number" id="rows" value="10" min="1" max="50">
+        <label for="cols">Columns:</label>
+        <input type="number" id="cols" value="10" min="1" max="50">
+    </div>
+    <div class="input-group">
+        <label for="startRow">Start Row:</label>
+        <input type="number" id="startRow" value="0" min="0">
+        <label for="startCol">Start Column:</label>
+        <input type="number" id="startCol" value="0" min="0">
+    </div>
+    <button onclick="generateRandomGrid()">Generate Random Grid</button>
+    <button onclick="startFloodFill()">Start Flood Fill</button>
+    <div id="output"></div>
+    <script>
+        let grid = [];
+        let rows = 10;
+        let cols = 10;
+        let cellSize = 40;
+        let currentColor = 2;
+        let isFilling = false;
+        const regionColors = [
+            '#FF0000',
+            '#FFA500',
+            '#FFFF00',
+            '#00FF00',
+            '#0000FF',
+            '#800080',
+            '#FF69B4',
+            '#00FFFF',
+            '#FFD700',
+            '#FF4500',
+            '#ADFF2F',
+            '#4B0082',
+            '#FF6347',
+            '#20B2AA',
+            '#FF00FF',
+            '#7CFC00',
+            '#4682B4',
+            '#DAA520',
+            '#9932CC',
+            '#00CED1',
+            '#DC143C'
+        ];
+
+        function setup() {
+            createCanvas(cols * cellSize, rows * cellSize);
+            generateRandomGrid();
+        }
+
+        function draw() {
+            background(255);
+            drawGrid();
+            if (isFilling) {
+                performFloodFillStep();
+            }
+        }
+
+        function drawGrid() {
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < cols; j++) {
+                    let x = j * cellSize;
+                    let y = i * cellSize;
+                    if (grid[i][j] === 0) {
+                        fill(255);
+                    } else if (grid[i][j] === 1) {
+                        fill(0);
+                    } else {
+                        let colorIndex = grid[i][j] - 2;
+                        if (colorIndex < regionColors.length) {
+                            fill(regionColors[colorIndex]);
+                        } else {
+                            fill(regionColors[regionColors.length - 1]);
+                        }
+                    }
+                    stroke(0);
+                    rect(x, y, cellSize, cellSize);
+                }
+            }
+        }
+
+        function generateRandomGrid() {
+            rows = parseInt(document.getElementById("rows").value);
+            cols = parseInt(document.getElementById("cols").value);
+            if (rows < 1 || cols < 1 || rows > 50 || cols > 50) {
+                alert("Rows and columns must be between 1 and 50.");
+                document.getElementById("rows").value = 10;
+                document.getElementById("cols").value = 10;
+                rows = 10;
+                cols = 10;
+            }
+            document.getElementById("startRow").max = rows - 1;
+            document.getElementById("startCol").max = cols - 1;
+            createCanvas(cols * cellSize, rows * cellSize);
+            grid = [];
+            for (let i = 0; i < rows; i++) {
+                let row = [];
+                for (let j = 0; j < cols; j++) {
+                    row.push(Math.random() < 0.3 ? 1 : 0);
+                }
+                grid.push(row);
+            }
+            currentColor = 2;
+            isFilling = false;
+            updateOutput();
+        }
+
+        function startFloodFill() {
+            if (!isFilling) {
+                isFilling = true;
+                currentColor = 2;
+                let startRow = parseInt(document.getElementById("startRow").value);
+                let startCol = parseInt(document.getElementById("startCol").value);
+                if (startRow < 0 || startRow >= rows || startCol < 0 || startCol >= cols || grid[startRow][startCol] !== 0) {
+                    alert("Please select a valid navigable cell (value 0) within grid bounds.");
+                    isFilling = false;
+                    return;
+                }
+                floodFill(startRow, startCol, currentColor);
+                currentColor++;
+                performFloodFillStep();
+            }
+        }
+
+        function performFloodFillStep() {
+            let found = false;
+            for (let i = 0; i < rows && !found; i++) {
+                for (let j = 0; j < cols && !found; j++) {
+                    if (grid[i][j] === 0) {
+                        floodFill(i, j, currentColor);
+                        currentColor++;
+                        found = true;
+                    }
+                }
+            }
+            if (!found) {
+                isFilling = false;
+            }
+            updateOutput();
+        }
+
+        function floodFill(x, y, color) {
+            if (x < 0 || x >= rows || y < 0 || y >= cols || grid[x][y] !== 0) {
+                return;
+            }
+            grid[x][y] = color;
+            floodFill(x + 1, y, color);
+            floodFill(x - 1, y, color);
+            floodFill(x, y + 1, color);
+            floodFill(x, y - 1, color);
+        }
+
+        function updateOutput() {
+            let output = "Grid State:\n";
+            for (let i = 0; i < rows; i++) {
+                output += grid[i].join(" ") + "\n";
+            }
+            document.getElementById("output").innerText = output;
+        }
+    </script>
+</body>
+</html>
